@@ -71,8 +71,8 @@ class PrivateRecipeApiTest(TestCase):
 
         res = self.client.get(RECIPES_URL)
 
-        recipe = Recipe.objects.all().order_by('-id')
-        serializer = RecipeSerializer(recipe, many=True)
+        recipes = Recipe.objects.all().order_by('-id')
+        serializer = RecipeSerializer(recipes, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
@@ -116,7 +116,7 @@ class PrivateRecipeApiTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         recipe = Recipe.objects.get(id=res.data['id'])
-        for key in recipe.keys():
+        for key in payload.keys():
             self.assertEqual(payload[key], getattr(recipe, key))
 
     def test_create_recipe_with_tags(self):
@@ -125,7 +125,7 @@ class PrivateRecipeApiTest(TestCase):
         tag2 = sample_tag(user=self.user, name='Dessert')
         payload = {
             'title': 'Avocado lime cheesecake',
-            'tags' : [tag1.id, tag2.id],
+            'tags': [tag1.id, tag2.id],
             'time_minutes': 60,
             'price': 20.00
         }
